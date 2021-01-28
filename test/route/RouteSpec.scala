@@ -7,7 +7,6 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.api.test._
-import utils.JsonFormat._
 
 class RouteSpec extends PlaySpec with GuiceOneAppPerSuite {
 
