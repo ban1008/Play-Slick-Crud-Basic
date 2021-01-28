@@ -1,0 +1,132 @@
+@(list: Seq[Subject])(implicit flash: Flash)
+@main("Subject List") {
+<h1 align="center">Subject List</h1>
+<div class="subject-button">
+    <form action="/" method="get">
+        <button type="submit" name="subjectList"style='font-size:40px; background-color:transparent; border:none; outline:none; cursor:pointer;'>
+            <i class='fas fa-user-graduate'></i></button>
+    </form>
+</div>
+<div class="alert">
+    <h3 id="flash" style="opacity: 0;">@flash.get("msg")</h3>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@@1.13.1/build/alertify.min.js"></script>
+    <script>
+        if(document.getElementById("flash") != null){
+            console.log("here");
+          var t= document.getElementById('flash').innerHTML;
+          if(t.split(" ")[0]=="Success")
+            alertify.success(t);
+          else if(t.split(" ")[0]=="Failure")
+            alertify.error(t);
+        }
+    </script>
+</div>
+<div  class="search">
+    <input type="text" class="search-bar" id="myInput" onkeyup="myFunction()" placeholder="Search for names.." title="Type in a name">
+    <label for="myInput"><i class="fa fa-search" style="font-size:15px"></i></label>
+</div>
+<!--Display Table-->
+<section class="topclass">
+    <div class="tbl-header">
+        <table cellpadding="0" cellspacing="0" border="0" id="myTable">
+            <thead>
+            <tr>
+                <th>Subject ID</th>
+                <th>Subject Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="tbl-content">
+        <table cellpadding="0" cellspacing="0" border="0" id="myTable2">
+            <tbody>
+            @for(ele <- list){
+            <tr><td align="left" id="@ele.id">@ele.id</td>
+                <td align="left" id="@ele.id name">@ele.name</td>
+                <td><button id="@ele.id edit" type="submit" onclick="toggleUpdateForm(this.id)" name="update" style='font-size:12px; background-color:transparent; border:none; outline:none; cursor:pointer;'>
+                    <i class='far fa-edit'></i>
+                </button></td>
+                <td><form action="deleteSubjectValue" method="post" onsubmit="return confirm('Are you sure?');">
+                    <input name="id" placeholder="Subject ID" type="hidden" value="@ele.id">
+                    <button id="@ele.id delete" type="submit" name="delete" style='font-size:13px; background-color:transparent; border:none; outline:none; cursor:pointer;'><i class='far fa-trash-alt'></i></button>
+                </form>
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable2");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</section>
+
+
+
+<!--Insert Form-->
+<div class="overlay-form" >
+    <div class="close-btn" onclick="toggleForm()">&times;</div>
+    <form method="post" action="postSubjectValue" onsubmit="return confirm('Are you sure?');">
+        <div class="form-element">
+            <label for="subjectName">Subject Name</label>
+            <input type="text" id="subjectName" name="subjectName" style="color: white;" required>
+        </div>
+        <div class="form-element">
+            <button type="submit" name="insert">Insert</button>
+        </div>
+    </form>
+    <script>
+        function toggleForm(){
+            document.body.classList.toggle('activeForm');
+        }
+    </script>
+</div>
+<div class="center">
+    <button onclick="toggleForm()">Insert Subject</button>
+</div>
+
+
+<!--Update Form-->
+<div class="overlay-form-update" >
+    <div class="close-btn-update" onclick="toggleUpdateForm()">&times;</div>
+    <form method="post" action="updateSubjectValue" onsubmit="return confirm('Are you sure?');">
+        <div class="form-element-update">
+            <input type="hidden" id="subId" name="id" style="color: white;" required>
+        </div>
+        <div class="form-element-update">
+            <label for="subjectName">Subject Name</label>
+            <input type="text" id="subName" name="subjectName" style="color: white;" required>
+        </div>
+        <div class="form-element-update">
+            <button type="submit" name="updateSubject">update</button>
+        </div>
+    </form>
+    <script>
+        function toggleUpdateForm(id){
+            document.body.classList.toggle('activeUpdateForm');
+            document.getElementById("subId").value=id.split(" ")[0];
+            document.getElementById("subName").value=document.getElementById(id.split(" ")[0]+" name").innerHTML;
+        }
+    </script>
+</div>
+
+}
